@@ -21,6 +21,7 @@ interface CommonProps {
 }
 
 type LengthType = number | string;
+type DistanceType = Array<string>
 
 export interface LoaderHeightWidthProps extends CommonProps {
   height?: LengthType;
@@ -29,6 +30,10 @@ export interface LoaderHeightWidthProps extends CommonProps {
 
 export interface LoaderSizeProps extends CommonProps {
   size?: LengthType;
+}
+
+export interface LoaderSizeDistanceProps extends LoaderSizeProps {
+  distance?: DistanceType;
 }
 
 export interface LoaderSizeMarginProps extends LoaderSizeProps {

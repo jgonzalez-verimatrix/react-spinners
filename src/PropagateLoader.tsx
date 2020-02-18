@@ -7,55 +7,75 @@ import { sizeDefaults, parseLengthAndUnit } from "./helpers";
 import {
   StyleFunction,
   PrecompiledCss,
-  LoaderSizeProps,
-  StyleFunctionWithIndex
+  LoaderSizeDistanceProps,
+  StyleFunctionWithIndex,
+  LengthObject
 } from "./interfaces";
 
-// 1.5 4.5 7.5
-let distance: number[] = [1, 3, 5];
+class Loader extends React.PureComponent<LoaderSizeDistanceProps> {
+  public static defaultProps: LoaderSizeDistanceProps = sizeDefaults(15);
 
-const propagate: Keyframes[] = [
-  keyframes`
-      25% {transform: translateX(-${distance[0]}rem) scale(0.75)}
-      50% {transform: translateX(-${distance[1]}rem) scale(0.6)}
-      75% {transform: translateX(-${distance[2]}rem) scale(0.5)}
-      95% {transform: translateX(0rem) scale(1)}
-    `,
-  keyframes`
-      25% {transform: translateX(-${distance[0]}rem) scale(0.75)}
-      50% {transform: translateX(-${distance[1]}rem) scale(0.6)}
-      75% {transform: translateX(-${distance[1]}rem) scale(0.6)}
-      95% {transform: translateX(0rem) scale(1)}
-    `,
-  keyframes`
-      25% {transform: translateX(-${distance[0]}rem) scale(0.75)}
-      75% {transform: translateX(-${distance[0]}rem) scale(0.75)}
-      95% {transform: translateX(0rem) scale(1)}
-    `,
-  keyframes`
-      25% {transform: translateX(${distance[0]}rem) scale(0.75)}
-      75% {transform: translateX(${distance[0]}rem) scale(0.75)}
-      95% {transform: translateX(0rem) scale(1)}
-    `,
-  keyframes`
-      25% {transform: translateX(${distance[0]}rem) scale(0.75)}
-      50% {transform: translateX(${distance[1]}rem) scale(0.6)}
-      75% {transform: translateX(${distance[1]}rem) scale(0.6)}
-      95% {transform: translateX(0rem) scale(1)}
-    `,
-  keyframes`
-      25% {transform: translateX(${distance[0]}rem) scale(0.75)}
-      50% {transform: translateX(${distance[1]}rem) scale(0.6)}
-      75% {transform: translateX(${distance[2]}rem) scale(0.5)}
-      95% {transform: translateX(0rem) scale(1)}
-    `
-];
+  private getPropagate(): Keyframes[] {
+    let distance: string[];
+    let propagate: Keyframes[] = [];
+    let propagation: Array<LengthObject> = [];
 
-class Loader extends React.PureComponent<LoaderSizeProps> {
-  public static defaultProps: LoaderSizeProps = sizeDefaults(15);
+    if(this.props.distance) {
+      distance = this.props.distance;
+    }
+    else {
+      distance = ['2rem','4rem', '6rem'];
+    }
+
+    for (var i = 0; i < distance.length; i++) {
+      let { value, unit } = parseLengthAndUnit(distance[i]!);
+      let propagationObject = {value: value, unit:unit};
+      propagation.push(propagationObject)
+    }
+
+    propagate = [
+      keyframes`
+        25% {transform: translateX(-${`${propagation[0].value}${propagation[0].unit}`}) scale(0.75)}
+        50% {transform: translateX(-${`${propagation[1].value}${propagation[1].unit}`}) scale(0.6)}
+        75% {transform: translateX(-${`${propagation[2].value}${propagation[2].unit}`}) scale(0.5)}
+        95% {transform: translateX(0rem) scale(1)}
+      `,
+      keyframes`
+        25% {transform: translateX(-${`${propagation[0].value}${propagation[0].unit}`}) scale(0.75)}
+        50% {transform: translateX(-${`${propagation[1].value}${propagation[1].unit}`}) scale(0.6)}
+        75% {transform: translateX(-${`${propagation[1].value}${propagation[1].unit}`}) scale(0.6)}
+        95% {transform: translateX(0rem) scale(1)}
+      `,
+      keyframes`
+        25% {transform: translateX(-${`${propagation[0].value}${propagation[0].unit}`}) scale(0.75)}
+        75% {transform: translateX(-${`${propagation[0].value}${propagation[0].unit}`}) scale(0.75)}
+        95% {transform: translateX(0rem) scale(1)}
+      `,
+      keyframes`
+        25% {transform: translateX(${`${propagation[0].value}${propagation[0].unit}`}) scale(0.75)}
+        75% {transform: translateX(${`${propagation[0].value}${propagation[0].unit}`}) scale(0.75)}
+        95% {transform: translateX(0rem) scale(1)}
+      `,
+      keyframes`
+        25% {transform: translateX(${`${propagation[0].value}${propagation[0].unit}`}) scale(0.75)}
+        50% {transform: translateX(${`${propagation[1].value}${propagation[1].unit}`}) scale(0.6)}
+        75% {transform: translateX(${`${propagation[1].value}${propagation[1].unit}`}) scale(0.6)}
+        95% {transform: translateX(0rem) scale(1)}
+      `,
+      keyframes`
+        25% {transform: translateX(${`${propagation[0].value}${propagation[0].unit}`}) scale(0.75)}
+        50% {transform: translateX(${`${propagation[1].value}${propagation[1].unit}`}) scale(0.6)}
+        75% {transform: translateX(${`${propagation[2].value}${propagation[2].unit}`}) scale(0.5)}
+        95% {transform: translateX(0rem) scale(1)}
+      `
+    ];
+
+    return propagate;
+  }
 
   public style: StyleFunctionWithIndex = (i: number): PrecompiledCss => {
     const { size, color } = this.props;
+    const propagate = this.getPropagate();
     let { value, unit } = parseLengthAndUnit(size!);
 
     return css`
