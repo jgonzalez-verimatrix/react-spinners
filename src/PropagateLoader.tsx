@@ -24,7 +24,7 @@ class Loader extends React.PureComponent<LoaderSizeDistanceProps> {
       distance = this.props.distance;
     }
     else {
-      distance = ['2rem','4rem', '6rem'];
+      distance = ['1rem','3rem', '5rem'];
     }
 
     for (var i = 0; i < distance.length; i++) {
