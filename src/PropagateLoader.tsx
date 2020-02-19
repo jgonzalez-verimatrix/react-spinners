@@ -16,11 +16,12 @@ class Loader extends React.PureComponent<LoaderSizeDistanceProps> {
   public static defaultProps: LoaderSizeDistanceProps = sizeDefaults(15);
 
   private getPropagate(): Keyframes[] {
+    let distanceArraySize = 3
     let distance: string[];
     let propagate: Keyframes[] = [];
     let propagation: Array<LengthObject> = [];
 
-    if(this.props.distance) {
+    if(this.props.distance && this.props.distance.length === distanceArraySize) {
       distance = this.props.distance;
     }
     else {
